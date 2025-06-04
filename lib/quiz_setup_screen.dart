@@ -1,4 +1,10 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+
+import 'flashcard_model.dart';
+import 'quiz_in_progress_screen.dart';
 
 // Quiz source selection options
 enum QuizSourceMode { all, favorites, wrong }
@@ -63,12 +69,46 @@ class _QuizSetupScreenState extends State<QuizSetupScreen> {
     }
   }
 
-  void _startQuiz() {
+  Future<List<Flashcard>> _loadAllFlashcards() async {
+    final String jsonString =
+        await DefaultAssetBundle.of(context).loadString('assets/words.json');
+    final List<dynamic> jsonData = json.decode(jsonString) as List<dynamic>;
+    List<Flashcard> cards = [];
+    for (var item in jsonData) {
+      if (item is Map<String, dynamic> &&
+          item['id'] != null &&
+          item['term'] != null) {
+        try {
+          cards.add(Flashcard.fromJson(item));
+        } catch (_) {}
+      }
+    }
+    return cards;
+  }
+
+  Future<void> _startQuiz() async {
     debugPrint('--- Quiz Setup ---');
     debugPrint('mode: $_mode');
     debugPrint('questionCount: $_questionCount');
     debugPrint('quizType: $_quizType');
     debugPrint('stars: $_starFilter');
+
+    final allCards = await _loadAllFlashcards();
+    if (!mounted) return;
+    allCards.shuffle(Random());
+    final sessionWords = allCards.take(_questionCount).toList();
+
+    if (sessionWords.isEmpty) return;
+
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => QuizInProgressScreen(
+          quizSessionWords: sessionWords,
+          totalSessionQuestions: sessionWords.length,
+          quizSessionType: _quizType,
+        ),
+      ),
+    );
   }
 
   Widget _buildStarCheckbox(String key, Color color) {
