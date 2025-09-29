@@ -29,7 +29,7 @@ String getAppBarTitle(
     case AppScreen.wordbookLibrary:
       return '単語帳ライブラリ';
     case AppScreen.favorites:
-      return '準備中';
+      return 'お気に入り';
     case AppScreen.history:
       return '閲覧履歴';
     case AppScreen.quiz:

@@ -105,7 +105,7 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         }
         return const Center(child: CircularProgressIndicator());
       case AppScreen.favorites:
-        return const FavoritesContent();
+        return FavoritesContent(navigateTo: _navigateTo);
       case AppScreen.history:
         return const HistoryContent();
       case AppScreen.quiz:
