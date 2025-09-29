@@ -178,6 +178,13 @@ class HomeTabContent extends ConsumerWidget {
                   const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: () {
+                      navigateTo(AppScreen.favorites);
+                    },
+                    child: const Text('お気に入りを表示'),
+                  ),
+                  const SizedBox(height: 8),
+                  ElevatedButton(
+                    onPressed: () {
                       navigateTo(AppScreen.learningHistoryDetail);
                     },
                     child: const Text('学習履歴詳細へ'),
